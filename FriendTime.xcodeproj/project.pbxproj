@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BAE425CA2EA45D5000F88925 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = BAE425C92EA45D5000F88925 /* FirebaseAnalytics */; };
+		BAE425CC2EA45D5000F88925 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BAE425CB2EA45D5000F88925 /* FirebaseAuth */; };
+		BAE425CE2EA45D5000F88925 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BAE425CD2EA45D5000F88925 /* FirebaseCore */; };
+		BAE425D02EA45D5000F88925 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BAE425CF2EA45D5000F88925 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BAE425AA2EA458E900F88925 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAE425CA2EA45D5000F88925 /* FirebaseAnalytics in Frameworks */,
+				BAE425D02EA45D5000F88925 /* FirebaseFirestore in Frameworks */,
+				BAE425CE2EA45D5000F88925 /* FirebaseCore in Frameworks */,
+				BAE425CC2EA45D5000F88925 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +123,10 @@
 			);
 			name = FriendTime;
 			packageProductDependencies = (
+				BAE425C92EA45D5000F88925 /* FirebaseAnalytics */,
+				BAE425CB2EA45D5000F88925 /* FirebaseAuth */,
+				BAE425CD2EA45D5000F88925 /* FirebaseCore */,
+				BAE425CF2EA45D5000F88925 /* FirebaseFirestore */,
 			);
 			productName = FriendTime;
 			productReference = BAE4259C2EA458E700F88925 /* FriendTime.app */;
@@ -195,6 +210,9 @@
 			);
 			mainGroup = BAE425932EA458E600F88925;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BAE4259D2EA458E700F88925 /* Products */;
 			projectDirPath = "";
@@ -405,6 +423,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -437,6 +456,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,6 +598,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BAE425C92EA45D5000F88925 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		BAE425CB2EA45D5000F88925 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		BAE425CD2EA45D5000F88925 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		BAE425CF2EA45D5000F88925 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAE425C82EA45D5000F88925 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BAE425942EA458E600F88925 /* Project object */;
 }
