@@ -40,7 +40,7 @@
 		BA50293B2EA46911006B4CFD /* Exceptions for "FriendTime" folder in "FriendTime" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = BAE4259B2EA458E600F88925 /* FriendTime */;
 		};
