@@ -36,9 +36,22 @@
 		BAE425B32EA458E900F88925 /* FriendTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FriendTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BA50293B2EA46911006B4CFD /* Exceptions for "FriendTime" folder in "FriendTime" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BAE4259B2EA458E600F88925 /* FriendTime */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BAE4259E2EA458E700F88925 /* FriendTime */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BA50293B2EA46911006B4CFD /* Exceptions for "FriendTime" folder in "FriendTime" target */,
+			);
 			path = FriendTime;
 			sourceTree = "<group>";
 		};
@@ -418,6 +431,9 @@
 				DEVELOPMENT_TEAM = N97JH7SC4C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FriendTime/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "FriendTime uses your location in the background to keep your time zone accurate for friends.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "FriendTime uses your location to show your friends what time it is where you are.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -429,6 +445,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AlysonKosek.FriendTime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -451,6 +468,9 @@
 				DEVELOPMENT_TEAM = N97JH7SC4C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FriendTime/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "FriendTime uses your location in the background to keep your time zone accurate for friends.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "FriendTime uses your location to show your friends what time it is where you are.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -462,6 +482,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AlysonKosek.FriendTime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
