@@ -78,7 +78,7 @@ struct SignUpView: View {
         do {
             let uid = try await AuthService.shared.signUp(email: email, password: password)
 
-            let timezone = await fetchTimezoneStub()
+            let timezone = await fetchTimezone()
 
             try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezone)
 
@@ -93,8 +93,8 @@ struct SignUpView: View {
         }
     }
     
-    //TODO
-    func fetchTimezoneStub() async -> String {
-        return TimeZone.current.identifier
+    func fetchTimezone() async -> String {
+        let (_, timezone) = await LocationService.shared.requestLocationOnce()
+        return timezone?.identifier ?? TimeZone.current.identifier
     }
 }
