@@ -80,20 +80,21 @@ struct SignUpView: View {
 
             let timezone = await fetchTimezoneStub()
 
-            try await createUserProfileStub(uid: uid, displayName: displayName, username: username, email: email, timezone: timezone)
+            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezone)
 
             print("User created with UID: \(uid)")
 
         } catch {
-            errorMessage = error.localizedDescription
+            if let nsError = error as NSError?, nsError.domain == "FirestoreService" {
+                errorMessage = nsError.localizedDescription
+            } else {
+                errorMessage = error.localizedDescription
+            }
         }
     }
     
+    //TODO
     func fetchTimezoneStub() async -> String {
         return TimeZone.current.identifier
-    }
-
-    func createUserProfileStub(uid: String, displayName: String, username: String, email: String, timezone: String) async throws {
-        print("Creating Firestore profile for \(username) (\(timezone))")
     }
 }
