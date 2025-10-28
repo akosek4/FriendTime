@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct SignUpView: View {
     @State private var displayName = ""
@@ -78,9 +79,12 @@ struct SignUpView: View {
         do {
             let uid = try await AuthService.shared.signUp(email: email, password: password)
 
-            let timezone = await fetchTimezone()
+            let (coordinate, timezoneID) = await LocationService.shared.requestLocationOnce()
+            let lastLocation: [String: Double]? = coordinate.map {
+                ["lat": $0.latitude, "lon": $0.longitude]
+            }
 
-            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezone)
+            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezoneID, lastLocation: lastLocation)
 
             print("User created with UID: \(uid)")
 
@@ -91,10 +95,5 @@ struct SignUpView: View {
                 errorMessage = error.localizedDescription
             }
         }
-    }
-    
-    func fetchTimezone() async -> String {
-        let (_, timezone) = await LocationService.shared.requestLocationOnce()
-        return timezone?.identifier ?? TimeZone.current.identifier
     }
 }

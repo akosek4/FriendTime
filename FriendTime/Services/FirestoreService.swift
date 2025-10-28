@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseAuth
 
 final class FirestoreService {
     static let shared = FirestoreService()
@@ -14,7 +15,7 @@ final class FirestoreService {
     
     private let db = Firestore.firestore()
     
-    func createUserProfile(uid: String, displayName: String, username: String, email: String, timezone: String)  async throws {
+    func createUserProfile(uid: String, displayName: String, username: String, email: String, timezone: String, lastLocation: [String: Double]? = nil)  async throws {
         let lowerUsername = username.lowercased()
         let usernamesRef = db.collection("usernames").document(lowerUsername)
         let usersRef = db.collection("users").document(uid)
@@ -51,15 +52,44 @@ final class FirestoreService {
                 "createdAt": FieldValue.serverTimestamp(),
             ], forDocument: usernamesRef)
             
-            transaction.setData([
+            var userData: [String: Any] = [
                 "uid": uid,
                 "username": lowerUsername,
                 "displayName": displayName,
                 "email": email,
                 "timezone": timezone,
-                "createdAt": FieldValue.serverTimestamp(),
-                ], forDocument: usersRef)
+                "createdAt": FieldValue.serverTimestamp()
+            ]
+            
+            if let lastLocation = lastLocation {
+                userData["lastLocation"] = lastLocation
+            }
+            
+            transaction.setData(userData, forDocument: usersRef)
             return nil
         }
+    }
+    
+    func updateUser(uid: String, timezone: TimeZone, lastLocation: [String: Double]?) async throws {
+        var data: [String: Any] = [
+            "timezone": timezone.identifier,
+            "updatedAt": FieldValue.serverTimestamp()
+        ]
+        
+        if let lastLocation = lastLocation {
+            data["lastLocation"] = lastLocation
+        }
+        
+        try await db.collection("users").document(uid).setData(data, merge: true)
+    }
+    
+    func getCurrentUserDoc() async throws -> [String: Any]? {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found.")
+            return nil
+        }
+        
+        let doc = try await db.collection("users").document(uid).getDocument()
+        return doc.data()
     }
 }
