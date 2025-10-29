@@ -99,4 +99,21 @@ final class AuthViewModel: ObservableObject {
     func fetchUserProfile(uid: String) async throws -> UserModel {
         return try await FirestoreService.shared.fetchUserProfile(uid: uid)
     }
+    
+    func updateUserProfile(displayName: String, username:String) async {
+        guard let uid = userID else { return }
+        let updateData: [String: Any] = [
+            "displayName": displayName,
+            "username": username
+        ]
+        
+        do {
+            try await FirestoreService.shared.updateUserProfile(uid: uid, data: updateData)
+            await loadUserProfile(uid: uid)
+            print("User profile updated")
+        } catch {
+            errorMessage = error.localizedDescription
+            print("Failed to update profile:", error.localizedDescription)
+        }
+    }
 }

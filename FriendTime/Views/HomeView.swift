@@ -11,6 +11,7 @@ import Combine
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var showEditProfile = false
     
     var body: some View {
         VStack(spacing: 20) {
@@ -39,7 +40,7 @@ struct HomeView: View {
 
             HStack {
                 Button("Edit Profile") {
-                    // Placeholder for later phase
+                    showEditProfile = true
                 }
                 .buttonStyle(.bordered)
 

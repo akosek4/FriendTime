@@ -92,4 +92,9 @@ final class FirestoreService {
         user.id = doc.documentID
         return user
     }
+    
+    func updateUserProfile(uid: String, data: [String: Any]) async throws {
+        try await db.collection("users").document(uid).updateData(data)
+        print("Updated Firestore profile for \(uid)")
+    }
 }
