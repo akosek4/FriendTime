@@ -83,13 +83,11 @@ final class FirestoreService {
         try await db.collection("users").document(uid).setData(data, merge: true)
     }
     
-    func getCurrentUserDoc() async throws -> [String: Any]? {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("No authenticated user found.")
-            return nil
-        }
-        
+    func fetchUserProfile(uid: String) async throws -> UserModel {
         let doc = try await db.collection("users").document(uid).getDocument()
-        return doc.data()
+        guard let data = doc.data() else {
+            throw NSError(domain: "FirestoreService", code: 2, userInfo: [NSLocalizedDescriptionKey: "User document not found."])
+        }
+        return UserModel(from: data)
     }
 }
