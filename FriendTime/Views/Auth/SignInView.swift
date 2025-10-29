@@ -13,8 +13,8 @@ struct SignInView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     
-    @StateObject private var viewModel = AuthViewModel()
-    
+    @EnvironmentObject var viewModel: AuthViewModel
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Welcome Back")
@@ -36,7 +36,7 @@ struct SignInView: View {
             }
             
             Button {
-                Task { await handleSignIn() }
+                Task { await viewModel.signIn(email: email, password: password) }
             } label: {
                 if isLoading {
                     ProgressView()
@@ -52,18 +52,5 @@ struct SignInView: View {
             .disabled(isLoading)
         }
         .padding()
-    }
-    
-    func handleSignIn() async {
-        isLoading = true
-        defer { isLoading = false}
-        
-        do {
-            let uid = try await AuthService.shared.signIn(email: email, password: password)
-            try await viewModel.fetchUserProfile(uid: uid)
-            print("User signed in successfully")
-        } catch {
-            errorMessage = error.localizedDescription
-        }
     }
 }

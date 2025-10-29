@@ -16,7 +16,7 @@ struct HomeView: View {
         VStack(spacing: 20) {
             if let user = viewModel.user {
                 VStack(spacing: 8) {
-                    Text(user.displayName!)
+                    Text(user.displayName ?? "No name")
                         .font(.title)
                         .bold()
                     

@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+import CoreLocation
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -27,17 +28,29 @@ final class AuthViewModel: ObservableObject {
         }
     }
     
-    func signUp(email: String, password: String) async {
+    func signUp(email: String, password: String, displayName: String, username: String) async {
         do {
             let uid = try await AuthService.shared.signUp(email: email, password: password)
+            let (coordinate, timezoneID) = await LocationService.shared.requestLocationOnce()
+            let lastLocation: [String: Double]? = coordinate.map {
+                ["lat": $0.latitude, "lon": $0.longitude]
+            }
+            
+            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezoneID, lastLocation: lastLocation)
+
             userID = uid
             isAuthenticated = true
             errorMessage = nil
+            
             print("Signed up successfully with UID: \(uid)")
             
             await loadUserProfile(uid: uid)
         } catch {
-            errorMessage = error.localizedDescription
+            if let nsError = error as NSError?, nsError.domain == "FirestoreService" {
+                errorMessage = nsError.localizedDescription
+            } else {
+                errorMessage = error.localizedDescription
+            }
             isAuthenticated = false
             print("Sign up failed:", error.localizedDescription)
         }
@@ -77,7 +90,7 @@ final class AuthViewModel: ObservableObject {
         do {
             let user = try await FirestoreService.shared.fetchUserProfile(uid: uid)
             currentUser = user
-            print("Loaded user profile for \(user.displayName)")
+            print("Loaded user profile for \(user.displayName ?? "unknown")")
         } catch {
             print("Failed to fetch user profile:", error.localizedDescription)
         }

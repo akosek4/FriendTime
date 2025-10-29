@@ -88,6 +88,8 @@ final class FirestoreService {
         guard let data = doc.data() else {
             throw NSError(domain: "FirestoreService", code: 2, userInfo: [NSLocalizedDescriptionKey: "User document not found."])
         }
-        return UserModel(from: data)
+        var user = UserModel(from: data)
+        user.id = doc.documentID
+        return user
     }
 }

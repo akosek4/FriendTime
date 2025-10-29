@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreLocation
 
 struct SignUpView: View {
     @State private var displayName = ""
@@ -17,82 +16,64 @@ struct SignUpView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     
-    @StateObject private var viewModel = AuthViewModel()
+    @EnvironmentObject var viewModel: AuthViewModel
+    
+    private var isFormValid: Bool {
+        !displayName.isEmpty &&
+        !username.isEmpty &&
+        !email.isEmpty &&
+        !password.isEmpty
+    }
     
     var body: some View {
-            VStack(spacing: 20) {
-                Text("Create Account")
-                    .font(.largeTitle)
-                    .bold()
+        VStack(spacing: 20) {
+            Text("Create Account")
+                .font(.largeTitle)
+                .bold()
 
-                TextField("Display Name", text: $displayName)
-                    .textFieldStyle(.roundedBorder)
+            TextField("Display Name", text: $displayName)
+                .textFieldStyle(.roundedBorder)
 
-                TextField("Username", text: $username)
-                    .textFieldStyle(.roundedBorder)
+            TextField("Username", text: $username)
+                .textFieldStyle(.roundedBorder)
 
-                TextField("Email", text: $email)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .textFieldStyle(.roundedBorder)
+            TextField("Email", text: $email)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .textFieldStyle(.roundedBorder)
 
-                SecureField("Password", text: $password)
-                    .textFieldStyle(.roundedBorder)
+            SecureField("Password", text: $password)
+                .textFieldStyle(.roundedBorder)
 
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                }
-
-                Button(action: {
-                    showLocationInfo = true
-                }) {
-                    if isLoading {
-                        ProgressView()
-                    } else {
-                        Text("Sign Up")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                }
-                .disabled(isLoading)
-
-                Spacer()
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.caption)
             }
-            .padding()
-            .sheet(isPresented: $showLocationInfo) {
-                LocationInfoModal {
-                    showLocationInfo = false
-                    Task { await handleSignUp() }
+
+            Button(action: {
+                showLocationInfo = true
+            }) {
+                if isLoading {
+                    ProgressView()
+                } else {
+                    Text("Sign Up")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
                 }
             }
+            .disabled(!isFormValid || isLoading)
+
+            Spacer()
         }
-    
-    func handleSignUp() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            let uid = try await AuthService.shared.signUp(email: email, password: password)
-
-            let (coordinate, timezoneID) = await LocationService.shared.requestLocationOnce()
-            let lastLocation: [String: Double]? = coordinate.map {
-                ["lat": $0.latitude, "lon": $0.longitude]
-            }
-
-            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezoneID, lastLocation: lastLocation)
-
-            print("User created with UID: \(uid)")
-
-        } catch {
-            if let nsError = error as NSError?, nsError.domain == "FirestoreService" {
-                errorMessage = nsError.localizedDescription
-            } else {
-                errorMessage = error.localizedDescription
+        .padding()
+        .sheet(isPresented: $showLocationInfo) {
+            LocationInfoModal {
+                showLocationInfo = false
+                Task { await viewModel.signUp(email: email, password: password, displayName: displayName, username: username) }
             }
         }
     }

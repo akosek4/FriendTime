@@ -24,7 +24,7 @@ struct UserModel: Identifiable, Codable {
     }
     
     init(from data: [String: Any]) {
-        self.id = data["id"] as? String
+        self.id = data["uid"] as? String
         self.email = data["email"] as? String ?? ""
         self.username = data["username"] as? String ?? ""
         self.lastLocation = data["lastLocation"] as? String
