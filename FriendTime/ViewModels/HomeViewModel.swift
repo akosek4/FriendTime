@@ -10,34 +10,31 @@ import Combine
 
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published var user: UserModel? = nil
-    @Published var isLoading = false
-    @Published var errorMessage: String? = nil
     @Published var formattedLocalTime = ""
-    
     private var cancellables = Set<AnyCancellable>()
-    let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
     
-    func loadUser() async {
-        isLoading = true
-        defer { isLoading = false}
-        
-        do {
-            guard let uid = AuthService.shared.currentUID else {
-                errorMessage = "User not authenticated."
-                return
+    init() {
+        timer
+            .sink { [weak self] _ in
+                self?.updateTime()
             }
-            
-            let user = try await FirestoreService.shared.fetchUserProfile(uid: uid)
-            self.user = user
+            .store(in: &cancellables)
+    }
+    
+    private var timezone: TimeZone?
+    
+    func configure(with timezoneIdentifier: String?) {
+        if let id = timezoneIdentifier, let tz = TimeZone(identifier: id) {
+            timezone = tz
             updateTime()
-        } catch {
-            errorMessage = error.localizedDescription
+        } else {
+            formattedLocalTime = "Unknown"
         }
     }
     
     func updateTime() {
-        guard let tz = user?.timezone, let timezone = TimeZone(identifier:  tz) else {
+        guard let tz = timezone else {
             formattedLocalTime = "Unknown"
             return
         }

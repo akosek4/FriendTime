@@ -36,7 +36,13 @@ final class AuthViewModel: ObservableObject {
                 ["lat": $0.latitude, "lon": $0.longitude]
             }
             
-            try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezoneID, lastLocation: lastLocation)
+            do {
+                try await FirestoreService.shared.createUserProfile(uid: uid, displayName: displayName, username: username, email: email, timezone: timezoneID, lastLocation: lastLocation)
+            } catch {
+                print("Firestore creation failed, rolling back user: \(error.localizedDescription)")
+                try? await AuthService.shared.deleteCurrentUser()
+                throw error
+            }
 
             userID = uid
             isAuthenticated = true
@@ -46,9 +52,47 @@ final class AuthViewModel: ObservableObject {
             
             await loadUserProfile(uid: uid)
         } catch {
-            if let nsError = error as NSError?, nsError.domain == "FirestoreService" {
-                errorMessage = nsError.localizedDescription
-            } else {
+            if let nsError = error as NSError? {
+                    switch nsError.domain {
+                    case "FirestoreService":
+                        if nsError.code == 0 {
+                            errorMessage = "That email is already in use."
+                        } else if nsError.code == 1 {
+                            errorMessage = "That username is already taken. Try another one."
+                        } else {
+                            errorMessage = "Something went wrong while creating your account."
+                        }
+
+                    case NSURLErrorDomain:
+                        errorMessage = "Network error. Check your connection and try again."
+                        
+                    case AuthErrorDomain:
+                        if let err = error as NSError? {
+                            if let errorCode = AuthErrorCode(rawValue: err.code) {
+                                switch errorCode {
+                                case .emailAlreadyInUse:
+                                    errorMessage = "That email is already in use."
+                                case .networkError:
+                                    errorMessage = "Network error — check your internet connection."
+                                case .weakPassword:
+                                    errorMessage = "Password must be at least 6 characters long."
+                                case .invalidEmail:
+                                    errorMessage = "Please enter a valid email."
+                                default:
+                                    errorMessage = err.localizedDescription
+                                }
+                            }
+                        }
+
+                    default:
+                        if nsError.localizedDescription.contains("denied") ||
+                           nsError.localizedDescription.contains("Location") {
+                            errorMessage = "We couldn’t access your location. Please enable permissions in Settings."
+                        } else {
+                            errorMessage = "Sign up failed: \(nsError.localizedDescription)"
+                        }
+                    }
+                } else {
                 errorMessage = error.localizedDescription
             }
             isAuthenticated = false

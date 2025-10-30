@@ -28,6 +28,11 @@ final class AuthService {
         try Auth.auth().signOut()
     }
     
+    func deleteCurrentUser() async throws {
+        guard let user = Auth.auth().currentUser else {return}
+        try await user.delete()
+    }
+    
     var currentUID: String? {
         Auth.auth().currentUser?.uid
     }

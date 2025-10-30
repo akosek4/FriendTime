@@ -14,7 +14,6 @@ struct SignUpView: View {
     @State private var username = ""
     @State private var showLocationInfo = false
     @State private var isLoading = false
-    @State private var errorMessage: String?
     
     @EnvironmentObject var viewModel: AuthViewModel
     
@@ -45,7 +44,7 @@ struct SignUpView: View {
             SecureField("Password", text: $password)
                 .textFieldStyle(.roundedBorder)
 
-            if let errorMessage = errorMessage {
+            if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
                     .font(.caption)

@@ -9,13 +9,13 @@ import SwiftUI
 import Combine
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var homeViewModel = HomeViewModel()
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showEditProfile = false
     
     var body: some View {
         VStack(spacing: 20) {
-            if let user = viewModel.user {
+            if let user = authViewModel.currentUser {
                 VStack(spacing: 8) {
                     Text(user.displayName ?? "No name")
                         .font(.title)
@@ -25,15 +25,16 @@ struct HomeView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text("Local time: \(viewModel.formattedLocalTime)")
+                    Text("Local time: \(homeViewModel.formattedLocalTime)")
                         .font(.headline)
                         .monospacedDigit()
                 }
                 .padding()
-            } else if viewModel.isLoading {
+                .onAppear {
+                    homeViewModel.configure(with: user.timezone)
+                }
+            } else {
                 ProgressView("Loading profile…")
-            } else if let error = viewModel.errorMessage {
-                Text(error).foregroundColor(.red)
             }
 
             Spacer()
@@ -52,11 +53,9 @@ struct HomeView: View {
             }
         }
         .padding()
-        .task {
-            await viewModel.loadUser()
-        }
-        .onReceive(viewModel.timer) { _ in
-            viewModel.updateTime()
+        .sheet(isPresented: $showEditProfile) {
+            EditProfileView()
+                .environmentObject(authViewModel)
         }
     }
 }
